@@ -88,6 +88,14 @@ function resetOS() {
     }
 }
 
+// Screen Management
+function showScreen(screenId) {
+    document.querySelectorAll('.screen').forEach(screen => {
+        screen.classList.remove('active');
+    });
+    document.getElementById(screenId).classList.add('active');
+}
+
 document.addEventListener('DOMContentLoaded', () => {
     const desktop = document.getElementById('desktop');
     const taskbarItems = document.getElementById('taskbar-items');
@@ -96,10 +104,36 @@ document.addEventListener('DOMContentLoaded', () => {
     const startMenu = document.getElementById('start-menu');
     const startMenuApps = document.querySelector('#start-menu .start-menu-apps');
 
+    const bootScreen = document.getElementById('boot-screen');
+    const lockScreen = document.getElementById('lock-screen');
+    const loginScreen = document.getElementById('login-screen');
+    const lockTime = document.querySelector('#lock-screen .lock-time');
+    const lockDate = document.querySelector('#lock-screen .lock-date');
+    const passwordInput = document.querySelector('#login-screen .password-input');
+    const loginButton = document.querySelector('#login-screen .login-button');
+    const loginMessage = document.querySelector('#login-screen .login-message');
+
     let zIndexCounter = 100;
     let activeWindow = null;
 
-    // Clock functionality
+    // Boot Sequence
+    setTimeout(() => {
+        bootScreen.classList.remove('active');
+        lockScreen.classList.add('active');
+        updateLockScreenTime();
+        setInterval(updateLockScreenTime, 1000);
+    }, 3000); // 3 seconds boot time
+
+    // Lock Screen Time Update
+    function updateLockScreenTime() {
+        const now = new Date();
+        const timeOptions = { hour: '2-digit', minute: '2-digit', second: '2-digit' };
+        const dateOptions = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+        lockTime.textContent = now.toLocaleTimeString('ko-KR', timeOptions);
+        lockDate.textContent = now.toLocaleDateString('ko-KR', dateOptions);
+    }
+
+    // Clock functionality (for taskbar)
     function updateClock() {
         const now = new Date();
         const hours = now.getHours().toString().padStart(2, '0');
@@ -121,6 +155,41 @@ document.addEventListener('DOMContentLoaded', () => {
             startMenu.classList.remove('show');
         }
     });
+
+    // Keyboard shortcuts for Lock/Unlock
+    document.addEventListener('keydown', (e) => {
+        if (lockScreen.classList.contains('active') && e.key === ' ') { // Spacebar on lock screen
+            lockScreen.classList.remove('active');
+            loginScreen.classList.add('active');
+            passwordInput.focus();
+        } else if (loginScreen.classList.contains('active') && e.key === ' ') { // Spacebar on login screen
+            e.preventDefault(); // Prevent space from being typed in password field
+            attemptLogin();
+        } else if (e.shiftKey && e.key === 'L') { // Shift + L to lock
+            showScreen('lock-screen');
+        }
+    });
+
+    // Login Logic (simple for now)
+    loginButton.addEventListener('click', attemptLogin);
+    passwordInput.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') {
+            attemptLogin();
+        }
+    });
+
+    function attemptLogin() {
+        // For simplicity, any password works or no password needed
+        // In a real app, you'd check against a stored hash
+        if (passwordInput.value === '' || passwordInput.value === 'password') { // Example password
+            loginScreen.classList.remove('active');
+            desktop.classList.add('active');
+            loginMessage.textContent = '';
+            passwordInput.value = ''; // Clear password field
+        } else {
+            loginMessage.textContent = '잘못된 암호입니다.';
+        }
+    }
 
     // Render Desktop Icons
     function renderDesktopIcons() {

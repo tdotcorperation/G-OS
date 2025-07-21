@@ -7,9 +7,29 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <div id="desktop">
-        <!-- Icons will be added here by JavaScript -->
+    <div id="boot-screen" class="screen active">
+        <img src="https://img.icons8.com/ios-filled/100/ffffff/windows8.png" alt="G OS Logo" class="boot-logo">
+        <div class="loading-spinner"></div>
+        <p>G OS 부팅 중...</p>
     </div>
+
+    <div id="lock-screen" class="screen">
+        <div class="lock-time"></div>
+        <div class="lock-date"></div>
+        <p class="lock-message">스페이스바를 눌러 잠금 해제</p>
+    </div>
+
+    <div id="login-screen" class="screen">
+        <div class="login-box">
+            <img src="https://img.icons8.com/ios-filled/80/000000/user-male-circle.png" alt="User Icon" class="user-icon">
+            <p>사용자</p>
+            <input type="password" placeholder="암호" class="password-input">
+            <button class="login-button">로그인</button>
+            <p class="login-message"></p>
+        </div>
+    </div>
+
+    <div id="desktop" class="screen">
 
     <div id="start-menu">
         <div class="start-menu-header">G OS</div>
