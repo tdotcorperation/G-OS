@@ -108,6 +108,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const lockScreen = document.getElementById('lock-screen');
     const loginScreen = document.getElementById('login-screen');
     const mainOsContainer = document.getElementById('main-os-container');
+    const fullscreenButton = document.getElementById('fullscreen-button');
 
     const lockTime = document.querySelector('#lock-screen .lock-time');
     const lockDate = document.querySelector('#lock-screen .lock-date');
@@ -118,13 +119,19 @@ document.addEventListener('DOMContentLoaded', () => {
     let zIndexCounter = 100;
     let activeWindow = null;
 
-    // Boot Sequence
-    setTimeout(() => {
-        bootScreen.classList.remove('active');
-        lockScreen.classList.add('active');
-        updateLockScreenTime();
-        setInterval(updateLockScreenTime, 1000);
-    }, 3000); // 3 seconds boot time
+    // Initial boot sequence start
+    function startBootSequence() {
+        showScreen('boot-screen');
+        mainOsContainer.style.display = 'none'; // Ensure main OS is hidden
+        setTimeout(() => {
+            bootScreen.classList.remove('active');
+            lockScreen.classList.add('active');
+            updateLockScreenTime();
+            setInterval(updateLockScreenTime, 1000);
+        }, 3000); // 3 seconds boot time
+    }
+
+    startBootSequence();
 
     // Lock Screen Time Update
     function updateLockScreenTime() {
@@ -196,6 +203,18 @@ document.addEventListener('DOMContentLoaded', () => {
             loginMessage.textContent = '잘못된 암호입니다.';
         }
     }
+
+    // Fullscreen functionality
+    fullscreenButton.addEventListener('click', () => {
+        if (!document.fullscreenElement) {
+            document.documentElement.requestFullscreen().then(() => {
+                // After entering fullscreen, restart the boot sequence
+                startBootSequence();
+            });
+        } else {
+            document.exitFullscreen();
+        }
+    });
 
     // Render Desktop Icons
     function renderDesktopIcons() {

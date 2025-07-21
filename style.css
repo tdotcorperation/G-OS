@@ -308,6 +308,17 @@ body {
     align-items: center;
 }
 
+#fullscreen-button {
+    font-size: 1.2em;
+    padding: 0 10px;
+    cursor: pointer;
+    color: #fff;
+}
+
+#fullscreen-button:hover {
+    color: #0078D7;
+}
+
 #clock {
     font-size: 0.9em;
     padding: 0 10px;
