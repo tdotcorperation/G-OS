@@ -1,3 +1,26 @@
+const apps = [
+    { id: 'my-computer', name: '내 컴퓨터', icon: 'https://img.icons8.com/ios-filled/50/000000/computer.png', content: '<h2>내 컴퓨터</h2><p>여기에 시스템 정보가 표시됩니다.</p>' },
+    { id: 'recycle-bin', name: '휴지통', icon: 'https://img.icons8.com/ios-filled/50/000000/trash.png', content: '<h2>휴지통</h2><p>삭제된 파일이 여기에 표시됩니다.</p>' },
+    { id: 'notepad', name: '메모장', icon: 'https://img.icons8.com/ios-filled/50/000000/notepad.png', content: '<h2>메모장</h2><textarea style="width:100%; height:calc(100% - 30px); resize:none;"></textarea>' },
+    { id: 'browser', name: '브라우저', icon: 'https://img.icons8.com/ios-filled/50/000000/internet.png', content: '<h2>브라우저</h2><iframe src="https://www.google.com" style="width:100%; height:calc(100% - 30px); border:none;"></iframe>' },
+    { id: 'calculator', name: '계산기', icon: 'https://img.icons8.com/ios-filled/50/000000/calculator.png', content: '<h2>계산기</h2><p>간단한 계산기 기능이 여기에 구현됩니다.</p>' },
+    { id: 'settings', name: '설정', icon: 'https://img.icons8.com/ios-filled/50/000000/settings.png', content: '<h2>설정</h2><p>시스템 설정을 변경할 수 있습니다.</p>' }
+];
+
+const appStoreApp = {
+    id: 'app-store', 
+    name: '앱 스토어', 
+    icon: 'https://img.icons8.com/ios-filled/50/000000/shopping-bag.png',
+    content: `
+        <h2>앱 스토어</h2>
+        <div id="app-list"></div>
+    `
+};
+
+// Add App Store to desktop icons and installed apps
+apps.push(appStoreApp);
+const installedApps = new Set(apps.map(app => app.id)); // Initially all defined apps are installed
+
 document.addEventListener('DOMContentLoaded', () => {
     const desktop = document.getElementById('desktop');
     const taskbarItems = document.getElementById('taskbar-items');
@@ -21,41 +44,16 @@ document.addEventListener('DOMContentLoaded', () => {
     updateClock(); // Initial call
 
     // Start Button and Menu
-    startButton.addEventListener('click', () => {
+    startButton.addEventListener('click', (e) => {
+        e.stopPropagation(); // Prevent desktop click from closing menu immediately
         startMenu.classList.toggle('show');
     });
 
-    desktop.addEventListener('click', (e) => {
+    document.addEventListener('click', (e) => {
         if (!startMenu.contains(e.target) && e.target !== startButton) {
             startMenu.classList.remove('show');
         }
     });
-
-    // App Data (including new apps and App Store)
-    const apps = [
-        { id: 'my-computer', name: '내 컴퓨터', icon: 'https://img.icons8.com/ios-filled/50/000000/computer.png', content: '<h2>내 컴퓨터</h2><p>여기에 시스템 정보가 표시됩니다.</p>' },
-        { id: 'recycle-bin', name: '휴지통', icon: 'https://img.icons8.com/ios-filled/50/000000/trash.png', content: '<h2>휴지통</h2><p>삭제된 파일이 여기에 표시됩니다.</p>' },
-        { id: 'notepad', name: '메모장', icon: 'https://img.icons8.com/ios-filled/50/000000/notepad.png', content: '<h2>메모장</h2><textarea style="width:100%; height:calc(100% - 30px); resize:none;"></textarea>' },
-        { id: 'browser', name: '브라우저', icon: 'https://img.icons8.com/ios-filled/50/000000/internet.png', content: '<h2>브라우저</h2><iframe src="https://www.google.com" style="width:100%; height:calc(100% - 30px); border:none;"></iframe>' },
-        { id: 'calculator', name: '계산기', icon: 'https://img.icons8.com/ios-filled/50/000000/calculator.png', content: '<h2>계산기</h2><p>간단한 계산기 기능이 여기에 구현됩니다.</p>' },
-        { id: 'settings', name: '설정', icon: 'https://img.icons8.com/ios-filled/50/000000/settings.png', content: '<h2>설정</h2><p>시스템 설정을 변경할 수 있습니다.</p>' }
-    ];
-
-    const installedApps = new Set(apps.map(app => app.id)); // Initially all defined apps are installed
-
-    // App Store App Data
-    const appStoreApp = {
-        id: 'app-store', 
-        name: '앱 스토어', 
-        icon: 'https://img.icons8.com/ios-filled/50/000000/shopping-bag.png',
-        content: `
-            <h2>앱 스토어</h2>
-            <div id="app-list"></div>
-        `
-    };
-    // Add App Store to desktop icons and installed apps
-    apps.push(appStoreApp);
-    installedApps.add(appStoreApp.id);
 
     // Render Desktop Icons
     function renderDesktopIcons() {
@@ -82,7 +80,7 @@ document.addEventListener('DOMContentLoaded', () => {
             // Make icons draggable
             let isDraggingIcon = false;
             let currentIcon = null;
-            let initialX, initialY, currentX, currentY, xOffset, yOffset;
+            let initialX, initialY, xOffset, yOffset;
 
             iconElement.addEventListener('mousedown', (e) => {
                 if (e.button === 0) { // Left click
@@ -96,18 +94,17 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
             });
 
-            desktop.addEventListener('mousemove', (e) => {
-                if (isDraggingIcon && currentIcon) {
-                    e.preventDefault();
-                    currentX = e.clientX - initialX;
-                    currentY = e.clientY - initialY;
+            document.addEventListener('mousemove', (e) => {
+                if (!isDraggingIcon) return;
+                e.preventDefault();
+                const currentX = e.clientX - initialX;
+                const currentY = e.clientY - initialY;
 
-                    currentIcon.style.left = `${xOffset + currentX}px`;
-                    currentIcon.style.top = `${yOffset + currentY}px`;
-                }
+                currentIcon.style.left = `${xOffset + currentX}px`;
+                currentIcon.style.top = `${yOffset + currentY}px`;
             });
 
-            desktop.addEventListener('mouseup', () => {
+            document.addEventListener('mouseup', () => {
                 if (isDraggingIcon && currentIcon) {
                     isDraggingIcon = false;
                     currentIcon.classList.remove('dragging');
@@ -255,13 +252,13 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
 
-        desktop.addEventListener('mousemove', (e) => {
+        document.addEventListener('mousemove', (e) => {
             if (!isDraggingWindow) return;
             windowElement.style.left = `${e.clientX - windowOffsetX}px`;
             windowElement.style.top = `${e.clientY - windowOffsetY}px`;
         });
 
-        desktop.addEventListener('mouseup', () => {
+        document.addEventListener('mouseup', () => {
             isDraggingWindow = false;
             titlebar.style.cursor = 'grab';
         });
