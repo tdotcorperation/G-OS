@@ -45,6 +45,68 @@ body {
     border-radius: 5px;
 }
 
+.desktop-icon.dragging {
+    cursor: grabbing;
+    opacity: 0.7;
+}
+
+#start-menu {
+    position: fixed;
+    bottom: 40px; /* Above taskbar */
+    left: 0;
+    width: 300px;
+    height: 400px;
+    background-color: rgba(47, 47, 47, 0.95); /* Dark grey, semi-transparent */
+    box-shadow: 0 -4px 8px rgba(0, 0, 0, 0.2);
+    border-top-right-radius: 5px;
+    display: flex;
+    flex-direction: column;
+    transform: translateY(100%); /* Hidden by default */
+    transition: transform 0.3s ease-out;
+    z-index: 999;
+}
+
+#start-menu.show {
+    transform: translateY(0%);
+}
+
+.start-menu-header {
+    padding: 10px;
+    font-size: 1.2em;
+    font-weight: bold;
+    color: #0078D7;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.start-menu-apps {
+    flex-grow: 1;
+    padding: 10px;
+    overflow-y: auto;
+}
+
+.start-menu-app-item {
+    display: flex;
+    align-items: center;
+    padding: 8px;
+    cursor: pointer;
+    border-radius: 3px;
+}
+
+.start-menu-app-item:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+.start-menu-app-item img {
+    width: 24px;
+    height: 24px;
+    margin-right: 10px;
+}
+
+.start-menu-app-item span {
+    font-size: 1em;
+}
+
+
 #taskbar {
     width: 100vw;
     height: 40px;
