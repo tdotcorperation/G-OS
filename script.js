@@ -107,6 +107,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const bootScreen = document.getElementById('boot-screen');
     const lockScreen = document.getElementById('lock-screen');
     const loginScreen = document.getElementById('login-screen');
+    const mainOsContainer = document.getElementById('main-os-container');
+
     const lockTime = document.querySelector('#lock-screen .lock-time');
     const lockDate = document.querySelector('#lock-screen .lock-date');
     const passwordInput = document.querySelector('#login-screen .password-input');
@@ -167,6 +169,7 @@ document.addEventListener('DOMContentLoaded', () => {
             attemptLogin();
         } else if (e.shiftKey && e.key === 'L') { // Shift + L to lock
             showScreen('lock-screen');
+            mainOsContainer.style.display = 'none'; // Hide desktop when locked
         }
     });
 
@@ -183,9 +186,12 @@ document.addEventListener('DOMContentLoaded', () => {
         // In a real app, you'd check against a stored hash
         if (passwordInput.value === '' || passwordInput.value === 'password') { // Example password
             loginScreen.classList.remove('active');
-            desktop.classList.add('active');
+            mainOsContainer.style.display = 'flex'; // Show desktop
             loginMessage.textContent = '';
             passwordInput.value = ''; // Clear password field
+            renderDesktopIcons(); // Re-render icons after login
+            renderStartMenuApps(); // Re-render start menu apps after login
+            applySavedBackground(); // Apply saved background after login
         } else {
             loginMessage.textContent = '잘못된 암호입니다.';
         }
