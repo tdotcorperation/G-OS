@@ -7,18 +7,21 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
+    <!-- Boot Screen -->
     <div id="boot-screen" class="screen active">
         <img src="https://img.icons8.com/ios-filled/100/ffffff/windows8.png" alt="G OS Logo" class="boot-logo">
         <div class="loading-spinner"></div>
         <p>G OS 부팅 중...</p>
     </div>
 
+    <!-- Lock Screen -->
     <div id="lock-screen" class="screen">
         <div class="lock-time"></div>
         <div class="lock-date"></div>
         <p class="lock-message">스페이스바를 눌러 잠금 해제</p>
     </div>
 
+    <!-- Login Screen -->
     <div id="login-screen" class="screen">
         <div class="login-box">
             <img src="https://img.icons8.com/ios-filled/80/000000/user-male-circle.png" alt="User Icon" class="user-icon">
@@ -29,11 +32,13 @@
         </div>
     </div>
 
+    <!-- Main OS Container (Desktop, Start Menu, Taskbar) -->
     <div id="main-os-container">
         <div id="desktop">
             <!-- Icons will be added here by JavaScript -->
         </div>
 
+        <!-- Start Menu -->
         <div id="start-menu">
             <div class="start-menu-header">G OS</div>
             <div class="start-menu-apps">
@@ -41,6 +46,7 @@
             </div>
         </div>
 
+        <!-- Taskbar -->
         <div id="taskbar">
             <div id="start-button">시작</div>
             <div id="taskbar-items">
